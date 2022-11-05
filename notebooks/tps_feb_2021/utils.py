@@ -2,6 +2,8 @@
 import os
 import numpy as np
 import pandas as pd
+import tensorflow as tf
+from tensorflow import keras
 
 from tps_feb_2021.config import config
 
@@ -43,3 +45,17 @@ def add_noise(df, p=0.15):
     for col in df.columns:
         noisy_dict[col] = swap_noise(df[col], p)
     return pd.DataFrame(noisy_dict)
+
+def extract_features(model, X_train):
+    '''
+    accepts a trained dae model and a dataframe of X_train (noisy) values
+    as input and returns as dataframe of features based on the extracted
+    node values for this training set
+    '''
+    feature_extractor = keras.Model(inputs=model.inputs,
+                                    outputs=[layer.output for layer in model.layers])
+    extracted_node_vals = feature_extractor.predict(X_train)
+    feature_nodes = tuple(extracted_node_vals[i] for i in range(len(extracted_node_vals)-1))
+    features = np.concatenate(feature_nodes, axis=1)
+    features_df = pd.DataFrame(features)
+    return(features_df)
