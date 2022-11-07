@@ -48,7 +48,7 @@ def add_noise(df, p=0.15):
 
 def extract_features(model, X_train):
     '''
-    accepts a trained dae model and a dataframe of X_train (noisy) values
+    accepts a trained dae model and a dataframe of X_train values
     as input and returns as dataframe of features based on the extracted
     node values for this training set
     '''
